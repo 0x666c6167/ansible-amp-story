@@ -1,0 +1,14 @@
+---
+- name: "Deploy my AMP Story"
+  vars_files: myvps-vault
+  hosts: myvps
+  tasks:
+    - include_role:
+        name: roles/amp_story
+  vars:
+    storyTitle: My Ansible Managed AMP Story 
+    storyCanonical: https://example.com/
+    storyPublisher: publisher-name
+    publisherLogoSource: https://example.com/publisherLogoSource
+    posterPortraitSource: https://example.com/posterPortraitSource
+    website_dir: '../dist/'

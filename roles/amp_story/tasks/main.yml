@@ -1,0 +1,34 @@
+---
+
+- name: Getting source images from Imgur API
+  get_url:
+    url: https://api.imgur.com/3/album/{{albumHash}}/images
+    dest: "{{website_dir}}/albumResponse.json"
+    headers:
+      Authorization: 'Client-ID {{clientId}}'
+  register: albumResponse
+
+- name: register photo album data
+  include_vars:
+    file: "{{website_dir}}/albumResponse.json"
+    name: album
+
+- name: Generate the images links variable
+  set_fact:
+    links: "{{ album.data | map(attribute='link') | list }}"
+    titles: "{{ album.data | map(attribute='title') | list }}"
+    descriptions: "{{ album.data | map(attribute='description') | list }}"
+
+- name: Display Links
+  debug:
+    var: "{{item}}"
+  with_items:
+    - links
+    - titles
+    - descriptions
+  
+- name: Deploy index.html
+  template:
+    src: index.html.j2
+    dest: "{{website_dir}}/index.html"
+    mode: u=rw,g=r,o=r
